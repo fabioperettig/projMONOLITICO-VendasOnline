@@ -10,4 +10,16 @@ public class UserDAO extends GenericDAO<User> {
     protected UserDAO() {
         super(User.class);
     }
+
+    /// Metodo JPQL
+    public boolean possuiAchievements(Long userId) {
+        Long count = entityManager.createQuery(
+                        "SELECT COUNT(a) FROM Achievement a WHERE a.user.id = :userId",
+                        Long.class
+                )
+                .setParameter("userId", userId)
+                .getSingleResult();
+
+        return count > 0;
+    }
 }

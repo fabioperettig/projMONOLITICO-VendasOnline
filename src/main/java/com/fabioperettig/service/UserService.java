@@ -32,4 +32,12 @@ public class UserService {
     public List<User> findAll() {
         return userDAO.findAll();
     }
+
+    public boolean possuiAchievements(Long userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException("Informe o ID do usuário.");
+        }
+
+        return userDAO.possuiAchievements(userId);
+    }
 }

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Getter
@@ -14,7 +15,9 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Entity
 @Table(name = "TB_ACHIEVEMENTS")
-public class Achievement implements Persistence {
+public class Achievement implements Persistence, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ach.seq")
