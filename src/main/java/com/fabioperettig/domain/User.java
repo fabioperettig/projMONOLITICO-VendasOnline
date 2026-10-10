@@ -1,17 +1,25 @@
 package com.fabioperettig.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "TB_USER")
-public class User {
+public class User implements Persistence {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "u.seq")
     @SequenceGenerator(name = "u.seq", sequenceName = "sequence_user", initialValue = 1, allocationSize = 1)
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name = "USUARIO", nullable = false, unique = true)
@@ -25,7 +33,4 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Achievement> achievements = new ArrayList<>();
-
-    ///usaremos LOMBOK
-
 }

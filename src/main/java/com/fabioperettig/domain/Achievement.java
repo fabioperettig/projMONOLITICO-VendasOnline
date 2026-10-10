@@ -2,16 +2,24 @@ package com.fabioperettig.domain;
 
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "TB_ACHIEVEMENTS")
-public class Achievement {
+public class Achievement implements Persistence {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ach.seq")
     @SequenceGenerator(name = "ach.seq", sequenceName = "sequence_achievements", initialValue = 1, allocationSize = 1)
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name = "TITULO", nullable = false)
@@ -33,7 +41,4 @@ public class Achievement {
 
     @Column(name = "PRIVADO", nullable = false)
     private Boolean privado;
-
-    ///usaremos LOMBOK
-
 }
