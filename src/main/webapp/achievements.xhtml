@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:p="jakarta.faces.passthrough"
+      lang="pt-BR">
+
+<h:head>
+    <title>Cadastro de conquistas</title>
+    <meta charset="UTF-8"/>
+</h:head>
+
+<h:body>
+    <h1>Conquistas</h1>
+    <h:link outcome="users" value="Ir para usuários"/>
+
+    <h:messages id="messages"/>
+
+    <!-- FORMULÁRIO -->
+    <h:form id="achievementForm">
+        <h:panelGrid columns="2">
+
+            <h:outputLabel for="titulo" value="Título:"/>
+            <h:inputText id="titulo"
+                         value="#{achievementController.achievement.titulo}"
+                         required="true"
+                         requiredMessage="Informe o título."/>
+
+            <h:outputLabel for="descricao" value="Descrição:"/>
+            <h:inputTextarea id="descricao"
+                             value="#{achievementController.achievement.descricao}"
+                             rows="4"
+                             cols="40"
+                             required="true"
+                             requiredMessage="Informe a descrição."/>
+
+            <h:outputLabel for="dataConquista" value="Data:"/>
+            <h:inputText id="dataConquista"
+                         p:type="date"
+                         value="#{achievementController.achievement.dataConquista}"
+                         required="true"
+                         requiredMessage="Informe a data."
+                         converterMessage="Informe uma data válida.">
+                <f:convertDateTime type="localDate"
+                                   pattern="yyyy-MM-dd"/>
+            </h:inputText>
+
+            <h:outputLabel for="usuario" value="Usuário:"/>
+            <h:selectOneMenu id="usuario"
+                             value="#{achievementController.achievement.user}"
+                             converter="userConverter"
+                             required="true"
+                             requiredMessage="Selecione um usuário.">
+
+                <f:selectItem itemLabel="Selecione..."
+                              itemValue="#{null}"
+                              noSelectionOption="true"/>
+
+                <f:selectItems value="#{achievementController.users}"
+                               var="usuario"
+                               itemLabel="#{usuario.apelido}"
+                               itemValue="#{usuario}"/>
+            </h:selectOneMenu>
+
+            <h:outputLabel for="privado" value="Privada:"/>
+            <h:selectBooleanCheckbox id="privado"
+                                     value="#{achievementController.achievement.privado}"/>
+
+        </h:panelGrid>
+
+        <h:commandButton value="Cadastrar"
+                         action="#{achievementController.create}"
+                         rendered="#{not achievementController.editing}"/>
+
+        <h:commandButton value="Salvar alteração"
+                         action="#{achievementController.update}"
+                         rendered="#{achievementController.editing}"/>
+
+        <h:commandButton value="Cancelar"
+                         action="#{achievementController.cancel}">
+            <f:ajax execute="@this"
+                    render="@form :messages"
+                    resetValues="true"/>
+        </h:commandButton>
+    </h:form>
+
+    <h2>Conquistas cadastradas</h2>
+
+    <!-- TABELA -->
+    <h:form id="achievementsTableForm">
+        <h:dataTable value="#{achievementController.achievements}"
+                     var="item"
+                     border="1">
+
+            <h:column>
+                <f:facet name="header">ID</f:facet>
+                <h:outputText value="#{item.id}"/>
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Título</f:facet>
+                <h:outputText value="#{item.titulo}"/>
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Descrição</f:facet>
+                <h:outputText value="#{item.descricao}"/>
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Data</f:facet>
+                <h:outputText value="#{item.dataConquista}">
+                    <f:convertDateTime type="localDate"
+                                       pattern="dd/MM/yyyy"/>
+                </h:outputText>
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Usuário</f:facet>
+                <h:outputText value="#{item.user.apelido}"/>
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Privada</f:facet>
+                <h:outputText value="#{item.privado ? 'Sim' : 'Não'}"/>
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Ações</f:facet>
+
+                <h:commandButton value="Editar"
+                                 action="#{achievementController.edit(item)}">
+                    <f:ajax execute="@this"
+                            render=":achievementForm :messages"
+                            resetValues="true"/>
+                </h:commandButton>
+
+                <h:commandButton value="Excluir"
+                                 action="#{achievementController.delete(item)}"/>
+            </h:column>
+
+        </h:dataTable>
+    </h:form>
+</h:body>
+
+</html>

@@ -40,6 +40,7 @@ public class UserController implements Serializable {
     }
 
     ///Metodos CRUD
+
     public void create() {
 
         userService.create(user);

@@ -43,6 +43,7 @@ main
     └── webapp
         ├── WEB-INF
         |   └── web.xml
+        ├── achievements.xhtml
         └── users.xhtml    
 ````
 </details>
@@ -208,6 +209,144 @@ public abstract class GenericDAO<T extends Persistence> implements IGenericDAO<T
     }
 }
 ```
+
+## Interface Web com JSF 🖥️
+
+Com a JSF, os métodos CRUD das entidades ganham uma uma interatividade mais amigável estilo `frontend` com páginas
+XHTML que acessam os controllers por expressões como `#{userController.create}`.
+
+<details><summary>xhtml da sessão de Usuário</summary>
+
+````xhtml
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      lang="pt-BR">
+
+<h:head>
+    <title>Cadastro de usuários</title>
+    <meta charset="UTF-8"/>
+</h:head>
+
+<h:body>
+    <h1>Usuários</h1>
+    <h:link outcome="achievements" value="Ir para conquistas"/>
+    <h:messages id="messages"/>
+
+    <!-- FORMULÁRIO -->
+    <h:form id="userForm">
+        <h:panelGrid columns="2">
+
+            <h:outputLabel for="apelido" value="Apelido:"/>
+            <h:inputText id="apelido"
+                         label="Apelido"
+                         value="#{userController.user.apelido}"
+                         required="true"
+                         requiredMessage="Informe o apelido."/>
+
+            <h:outputLabel for="email" value="E-mail:"/>
+            <h:inputText id="email"
+                         label="E-mail"
+                         value="#{userController.user.email}"
+                         required="true"
+                         requiredMessage="Informe o e-mail."/>
+
+        </h:panelGrid>
+
+        <h:commandButton value="Cadastrar"
+                         action="#{userController.create}"
+                         rendered="#{not userController.editing}"/>
+
+        <h:commandButton value="Salvar alteração"
+                         action="#{userController.update}"
+                         rendered="#{userController.editing}"/>
+
+        <h:commandButton value="Cancelar"
+                         action="#{userController.cancel}">
+            <f:ajax execute="@this"
+                    render="@form :messages"
+                    resetValues="true"/>
+        </h:commandButton>
+    </h:form>
+
+    <h2>Usuários cadastrados</h2>
+
+    <!-- PAINEL PRINCIPAL -->
+    <h:form id="usersTableForm">
+        <h:dataTable value="#{userController.users}"
+                     var="item"
+                     border="1">
+
+            <h:column>
+                <f:facet name="header">ID</f:facet>
+                <h:outputText value="#{item.id}"/>
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Apelido</f:facet>
+                <h:outputText value="#{item.apelido}"/>
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">E-mail</f:facet>
+                <h:outputText value="#{item.email}"/>
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Nível</f:facet>
+                <h:outputText value="#{item.nivel}"/>
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Ações</f:facet>
+
+                <h:commandButton value="Editar"
+                                 action="#{userController.edit(item)}">
+                    <f:ajax execute="@this"
+                            render=":userForm :messages"
+                            resetValues="true"/>
+                </h:commandButton>
+
+                <h:commandButton value="Excluir"
+                                 action="#{userController.prepareDelete(item)}"/>
+            </h:column>
+
+        </h:dataTable>
+    </h:form>
+
+    <!-- CONQUISTAS ENCONTRADAS NO DELETE -->
+    <h:form id="deleteConfirmationForm">
+        <h:panelGroup layout="block"
+                      rendered="#{not empty userController.userToDelete}">
+
+            <h3>Confirmar exclusão</h3>
+
+            <p>
+                Excluir
+                <h:outputText value="#{userController.userToDelete.apelido}"/>
+                também apagará todas as suas conquistas.
+                Deseja continuar?
+            </p>
+
+            <h:commandButton value="Confirmar exclusão"
+                             action="#{userController.confirmDelete}"/>
+
+            <h:commandButton value="Cancelar"
+                             action="#{userController.cancelDelete}"/>
+
+        </h:panelGroup>
+    </h:form>
+</h:body>
+
+</html>
+````
+</details>
+
+>Usuários sem conquistas são excluídos diretamente. Já quando há achievements vinculados ao usuário, é solicitado
+> uma confirmação antes de excluir, pois excluir o usuário também acarreta na exclusão de todos os achievements
+> atrelados.
 
 ## ------- Projeto em construção 🚧 -------
 
