@@ -1,0 +1,5 @@
+embed-server --server-config=standalone.xml --admin-only=true --std-out=echo
+
+/subsystem=datasources/data-source=MeuPostgresDS:add(jndi-name="java:jboss/datasources/MeuPostgresDS",driver-name="postgresql-42.7.14.jar",connection-url="${env.DB_URL}",user-name="${env.DB_USER}",password="${env.DB_PASSWORD}",jta=true,enabled=true)
+
+stop-embedded-server

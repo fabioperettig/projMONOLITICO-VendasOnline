@@ -21,7 +21,17 @@ services:
       start_period: 10s
 
   wildfly:
-    image: quay.io/wildfly/wildfly:39.0.0.Final-jdk17
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    image: conquistas-wildfly:dev
+
+    environment:
+      DB_URL: ${DB_URL:?Defina DB_URL no .env}
+      DB_USER: ${POSTGRES_USER:?Defina POSTGRES_USER no .env}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no .env}
+
 
     ports:
       - "127.0.0.1:${WILDFLY_HTTP_PORT:-8080}:8080"
