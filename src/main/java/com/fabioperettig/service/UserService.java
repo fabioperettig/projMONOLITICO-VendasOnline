@@ -1,0 +1,35 @@
+package com.fabioperettig.service;
+
+import com.fabioperettig.dao.UserDAO;
+import com.fabioperettig.domain.User;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
+
+import java.util.List;
+
+@Stateless
+public class UserService {
+
+    @Inject
+    private UserDAO userDAO;
+
+    public User create(User user) {
+        return userDAO.create(user);
+    }
+
+    public User read(Long id) {
+        return userDAO.read(id);
+    }
+
+    public User update(User user) {
+        return userDAO.update(user);
+    }
+
+    public void delete(User user) {
+        userDAO.delete(user);
+    }
+
+    public List<User> findAll() {
+        return userDAO.findAll();
+    }
+}
